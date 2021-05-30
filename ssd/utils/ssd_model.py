@@ -174,7 +174,7 @@ class DataTransform():
         各色チャネルの平均値。
     """
 
-    def __init__(self, input_size, color_mean):
+    def __init__(self, input_size, color_mean, color_std):
         self.data_transform = {
             'train': Compose([
                 ConvertFromInts(),  # intをfloat32に変換
@@ -185,12 +185,12 @@ class DataTransform():
                 RandomMirror(),  # 画像を反転させる
                 ToPercentCoords(),  # アノテーションデータを0-1に規格化
                 Resize(input_size),  # 画像サイズをinput_size×input_sizeに変形
-                SubtractMeans(color_mean)  # BGRの色の平均値を引き算
+                SubtractMeans(color_mean, color_std)  # BGRの色の平均値を引き算
             ]),
             'val': Compose([
                 ConvertFromInts(),  # intをfloatに変換
                 Resize(input_size),  # 画像サイズをinput_size×input_sizeに変形
-                SubtractMeans(color_mean)  # BGRの色の平均値を引き算
+                SubtractMeans(color_mean, color_std)  # BGRの色の平均値を引き算
             ])
         }
 
