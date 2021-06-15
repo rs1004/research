@@ -1,6 +1,7 @@
 DEV
 data
-weights
+weights*
+.vscode
 
 __pycache__
 .ipynb_checkpoints

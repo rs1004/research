@@ -78,9 +78,12 @@ class ConvertFromInts(object):
 
 
 class SubtractMeans(object):
-    def __init__(self, mean, std):
+    def __init__(self, mean, std=None):
         self.mean = np.array(mean, dtype=np.float32)
-        self.std = np.array(std, dtype=np.float32)
+        if std is None:
+            self.std = 1
+        else:
+            self.std = np.array(std, dtype=np.float32)
 
     def __call__(self, image, boxes=None, labels=None):
         image = image.astype(np.float32)
@@ -162,15 +165,15 @@ class RandomLightingNoise(object):
 
 
 class ConvertColor(object):
-    def __init__(self, current='BGR', transform='HSV'):
+    def __init__(self, current='RGB', transform='HSV'):
         self.transform = transform
         self.current = current
 
     def __call__(self, image, boxes=None, labels=None):
-        if self.current == 'BGR' and self.transform == 'HSV':
-            image = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-        elif self.current == 'HSV' and self.transform == 'BGR':
-            image = cv2.cvtColor(image, cv2.COLOR_HSV2BGR)
+        if self.current == 'RGB' and self.transform == 'HSV':
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+        elif self.current == 'HSV' and self.transform == 'RGB':
+            image = cv2.cvtColor(image, cv2.COLOR_HSV2RGB)
         else:
             raise NotImplementedError
         return image, boxes, labels
@@ -389,7 +392,7 @@ class PhotometricDistort(object):
             ConvertColor(transform='HSV'),
             RandomSaturation(),
             RandomHue(),
-            ConvertColor(current='HSV', transform='BGR'),
+            ConvertColor(current='HSV', transform='RGB'),
             RandomContrast()
         ]
         self.rand_brightness = RandomBrightness()

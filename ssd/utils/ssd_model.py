@@ -245,7 +245,7 @@ class VOCDataset(data.Dataset):
 
         # 1. 画像読み込み
         image_file_path = self.img_list[index]
-        img = cv2.imread(image_file_path)  # [高さ][幅][色BGR]
+        img = cv2.imread(image_file_path)[..., ::-1]  # [高さ][幅][色RGB]
         height, width, channels = img.shape  # 画像のサイズを取得
 
         # 2. xml形式のアノテーション情報をリストに
@@ -258,7 +258,7 @@ class VOCDataset(data.Dataset):
 
         # 色チャネルの順番がBGRになっているので、RGBに順番変更
         # さらに（高さ、幅、色チャネル）の順を（色チャネル、高さ、幅）に変換
-        img = torch.from_numpy(img[:, :, (2, 1, 0)]).permute(2, 0, 1)
+        img = torch.from_numpy(img).permute(2, 0, 1)
 
         # BBoxとラベルをセットにしたnp.arrayを作成、変数名「gt」はground truth（答え）の略称
         gt = np.hstack((boxes, np.expand_dims(labels, axis=1)))
